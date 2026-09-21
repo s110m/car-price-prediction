@@ -1,0 +1,21 @@
+# virtual environment
+/.venv
+
+# local backups of the notebook
+backup_*.ipynb
+
+# jupyter
+.ipynb_checkpoints/
+
+# python
+__pycache__/
+*.py[cod]
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# local AI-assistant project notes
+CLAUDE.md
