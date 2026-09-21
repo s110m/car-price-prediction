@@ -12,6 +12,22 @@ at the end. In plain terms, the typical prediction lands about **25% away** from
 
 ---
 
+## Just want a number for your own car?
+
+Section 14 exists for readers who would rather not work through the other thirteen. Run all cells, scroll to
+the bottom, and edit the last one:
+
+```python
+my_car = dict(make='toyota', year=2015, engine_hp=200,
+              highway_mpg=33, city_mpg=25, number_of_doors=4)
+```
+
+One caveat worth knowing before you read anything into the answer: the target is MSRP, the **new-car sticker
+price**. So it estimates what a car cost in the showroom in its model year — not what a used one is worth
+today. The model has never heard of mileage or condition.
+
+---
+
 ## The one rule
 
 Every failure in this notebook is the same rule being broken:
