@@ -18,7 +18,7 @@ Section 14 exists for readers who would rather not work through the other thirte
 the bottom, and edit the last one:
 
 ```python
-my_car = dict(make='toyota', year=2015, engine_hp=200,
+my_car = dict(make='bmw', year=2012, engine_hp=200,
               highway_mpg=33, city_mpg=25, number_of_doors=4)
 ```
 
@@ -129,8 +129,8 @@ pip install numpy pandas scikit-learn jupyter
 jupyter notebook car-price-prediction.ipynb
 ```
 
-scikit-learn is only needed for the second and third notebooks. Written against Python 3.12, NumPy 2.5, pandas 3.0 and
-scikit-learn 1.9. The pandas 3 part matters: copy-on-write is always on, so the
+scikit-learn is only needed for the second and third notebooks. Written against Python 3.12, NumPy 2.5,
+pandas 3.0 and scikit-learn 1.9. The pandas 3 part matters: copy-on-write is always on, so the
 `df["col"].fillna(0, inplace=True)` idiom that most car-price tutorials use silently does nothing here.
 
 ## The data
