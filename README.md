@@ -125,13 +125,14 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows
 source .venv/bin/activate       # macOS / Linux
 
-pip install numpy pandas scikit-learn jupyter
+pip install numpy pandas scikit-learn matplotlib jupyter
 jupyter notebook car-price-prediction.ipynb
 ```
 
-scikit-learn is only needed for the second and third notebooks. Written against Python 3.12, NumPy 2.5,
-pandas 3.0 and scikit-learn 1.9. The pandas 3 part matters: copy-on-write is always on, so the
-`df["col"].fillna(0, inplace=True)` idiom that most car-price tutorials use silently does nothing here.
+scikit-learn is only needed for the second and third notebooks, Matplotlib for the charts in all three.
+Written against Python 3.12, NumPy 2.5, pandas 3.0, scikit-learn 1.9 and Matplotlib 3.11. The pandas 3 part
+matters: copy-on-write is always on, so the `df["col"].fillna(0, inplace=True)` idiom that most car-price
+tutorials use silently does nothing here.
 
 ## The data
 
