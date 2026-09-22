@@ -97,16 +97,25 @@ meaning anything, and the only sign is `rank_` coming out below the number of co
 into one scikit-learn function that is not so forgiving: `ridge_regression(..., return_intercept=True)`
 quietly switches to an iterative solver that stops half-way on unscaled columns.
 
+## The mathematics behind it
+
+[`car-price-prediction-math.ipynb`](car-price-prediction-math.ipynb) explains why all of this happens, twice.
+Part I uses plain language and four real cars (a Mustang, a Transit, a Civic and a Camry). Part II restates
+every idea in linear algebra: least squares as a projection, rank and null space, singular values and the
+condition number, the pseudoinverse, ridge shrinkage, and why gradient descent needs rescaled columns. Along
+the way, the SVD rediscovers all three redundant columns on its own, down to every make's popularity value.
+
 ## What's in the repo
 
 ```
 car-price-prediction.ipynb                the whole project, 14 sections, runs top to bottom
 car-price-prediction-scikit-learn.ipynb   the same model rebuilt with scikit-learn, 11 sections
+car-price-prediction-math.ipynb           the mathematics behind both, in plain language and linear algebra
 data.csv                                  the dataset (also auto-downloaded if missing)
 README.md                                 this file
 ```
 
-Both notebooks are written to be read in order. Every number quoted in their markdown was checked against a
+The notebooks are written to be read in order. Every number quoted in their markdown was checked against a
 fresh Restart & Run All.
 
 ## Running it
@@ -120,7 +129,7 @@ pip install numpy pandas scikit-learn jupyter
 jupyter notebook car-price-prediction.ipynb
 ```
 
-scikit-learn is only needed for the second notebook. Written against Python 3.12, NumPy 2.5, pandas 3.0 and
+scikit-learn is only needed for the second and third notebooks. Written against Python 3.12, NumPy 2.5, pandas 3.0 and
 scikit-learn 1.9. The pandas 3 part matters: copy-on-write is always on, so the
 `df["col"].fillna(0, inplace=True)` idiom that most car-price tutorials use silently does nothing here.
 
