@@ -76,15 +76,37 @@ Two features were tested and reported honestly rather than quietly dropped:
   help. Section 8 says so.
 - **Make** — +0.068 across the same 40 splits, helping on 30 of the 31 that could be trained. It does help.
 
+## The same model with scikit-learn
+
+[`car-price-prediction-scikit-learn.ipynb`](car-price-prediction-scikit-learn.ipynb) rebuilds the model step
+by step with scikit-learn, on the identical split, as a check on the from-scratch version. Wherever the model
+has a unique answer, the two agree to at least 13 decimal places, and the final test RMSE is the same 0.4528.
+
+The interesting part is where they differ. scikit-learn's `LinearRegression` trains straight through the same
+broken matrices, without an error or a warning:
+
+| the redundant column | NumPy | scikit-learn |
+|---|---|---|
+| all three door columns, alongside the bias | RMSE 16.5 | RMSE 0.5143, `rank_` 7 of 8 |
+| all 48 make columns and `popularity` (both traps at once) | RMSE 111.3 | RMSE 0.4478, `rank_` 53 of 55 |
+| an all-zero make column (seed 20) | `LinAlgError` | RMSE 0.4543, `rank_` 52 of 53 |
+
+It never inverts `XᵀX`. Its least-squares solver detects the redundant columns and returns the smallest of the
+infinitely many equally good answers. The predictions survive, but the weights of the redundant columns stop
+meaning anything, and the only sign is `rank_` coming out below the number of columns. The notebook also runs
+into one scikit-learn function that is not so forgiving: `ridge_regression(..., return_intercept=True)`
+quietly switches to an iterative solver that stops half-way on unscaled columns.
+
 ## What's in the repo
 
 ```
-car-price-prediction.ipynb   the whole project, 13 sections, runs top to bottom
-data.csv                     the dataset (also auto-downloaded if missing)
-README.md                    this file
+car-price-prediction.ipynb                the whole project, 14 sections, runs top to bottom
+car-price-prediction-scikit-learn.ipynb   the same model rebuilt with scikit-learn, 11 sections
+data.csv                                  the dataset (also auto-downloaded if missing)
+README.md                                 this file
 ```
 
-The notebook is written to be read in order. Every number quoted in its markdown was checked against a
+Both notebooks are written to be read in order. Every number quoted in their markdown was checked against a
 fresh Restart & Run All.
 
 ## Running it
@@ -94,13 +116,13 @@ python -m venv .venv
 .venv\Scripts\activate          # Windows
 source .venv/bin/activate       # macOS / Linux
 
-pip install numpy pandas jupyter
+pip install numpy pandas scikit-learn jupyter
 jupyter notebook car-price-prediction.ipynb
 ```
 
-Written against Python 3.12, NumPy 2.5 and pandas 3.0. The pandas 3 part matters: copy-on-write is always
-on, so the `df["col"].fillna(0, inplace=True)` idiom that most car-price tutorials use silently does
-nothing here.
+scikit-learn is only needed for the second notebook. Written against Python 3.12, NumPy 2.5, pandas 3.0 and
+scikit-learn 1.9. The pandas 3 part matters: copy-on-write is always on, so the
+`df["col"].fillna(0, inplace=True)` idiom that most car-price tutorials use silently does nothing here.
 
 ## The data
 
