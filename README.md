@@ -10,6 +10,12 @@ three times, in three different disguises, for the same underlying reason.
 **Final result:** RMSE **0.4528** on the log price, measured on a test set that was touched exactly once,
 at the end. In plain terms, the typical prediction lands about **25% away** from the real price.
 
+![The final model on the test set: on the left the distribution of predicted prices against real prices, on the right one dot per test car, predicted price against real price on log scales](images/test-predictions.png)
+
+*The final model on the held-out test set. Left: the prices it predicts against the prices that are really
+there. Right: one dot per test car; dots on the line are perfect predictions. The spike at the far left of
+both panels is the 203 test cars carrying a placeholder price of \$2,000 — more on that below.*
+
 ---
 
 ## Just want a number for your own car?
@@ -47,6 +53,13 @@ Only the third one raised an error. The first two returned confident, entirely w
 uncomfortable lesson: a broken linear regression looks exactly like a working one until you check the
 condition number.
 
+![Two scatter plots of predicted against real log price. With the 6 cars the dots lie along the diagonal; without them they scatter from below -100 to above +60](images/dummy-variable-trap.png)
+
+*The first disguise, from section 6. Same features, same code; the only difference is that six cars whose
+door count was missing have been removed. Those six were the only rows where the three door columns did not
+add up to the bias column — with them gone, one column became an exact recipe of the others, and the
+predictions now run from −137 to +67 on a scale where a real car sits near 10.*
+
 Section 11 fixes the third case with ridge regression, and the honest finding there is that ridge does
 **not** make this model more accurate (0.4543 either way on the splits where both work). What it buys is
 that the model trains on all 40 random splits instead of 31.
@@ -76,6 +89,13 @@ Two features were tested and reported honestly rather than quietly dropped:
   help. Section 8 says so.
 - **Make** — +0.068 across the same 40 splits, helping on 30 of the 31 that could be trained. It does help.
 
+![Validation RMSE on 40 random splits, with and without the make columns. The orange dots sit below the blue ones, and nine splits are marked with a cross as untrainable](images/make-40-splits.png)
+
+*The make test, from section 10. Each point on the horizontal axis is one random split. The orange dots sit
+clearly below the blue ones, by more than the splits differ among themselves, so the gain is real rather
+than luck. The nine black crosses are the splits that raised `LinAlgError`: a make with three to five cars
+in the entire dataset landed wholly outside the training half, leaving a column of zeros.*
+
 ## The same model with scikit-learn
 
 [`car-price-prediction-scikit-learn.ipynb`](car-price-prediction-scikit-learn.ipynb) rebuilds the model step
@@ -97,6 +117,12 @@ meaning anything, and the only sign is `rank_` coming out below the number of co
 into one scikit-learn function that is not so forgiving: `ridge_regression(..., return_intercept=True)`
 quietly switches to an iterative solver that stops half-way on unscaled columns.
 
+![Left: a bar chart where the three door weights of the two models differ. Right: a scatter plot where the two models' predictions all lie on the diagonal](images/sklearn-same-predictions.png)
+
+*What "the weights stop meaning anything" looks like. The two models disagree about what being a 2-door car
+is worth — 0.073 against 0.033 — and agree on every single prediction to within 3.6 × 10⁻¹⁴. Only the
+differences between the door weights are pinned down by the data, and those are identical in both.*
+
 ## The mathematics behind it
 
 [`car-price-prediction-math.ipynb`](car-price-prediction-math.ipynb) explains why all of this happens, twice.
@@ -112,6 +138,7 @@ car-price-prediction.ipynb                the whole project, 14 sections, runs t
 car-price-prediction-scikit-learn.ipynb   the same model rebuilt with scikit-learn, 11 sections
 car-price-prediction-math.ipynb           the mathematics behind both, in plain language and linear algebra
 data.csv                                  the dataset (also auto-downloaded if missing)
+images/                                   the five charts shown above, exported from the notebooks
 README.md                                 this file
 ```
 
@@ -143,6 +170,12 @@ notebook's first cell also fetches it from
 
 The target is log-transformed (`np.log1p`), because prices run from $2,000 to $2,065,902 and a handful of
 supercars would otherwise dominate every error.
+
+![Two histograms: prices in dollars, with a long thin tail to the right, and the log of the same prices, a roughly symmetric hill](images/log-price.png)
+
+*Why the log. Left: prices in dollars, with 279 cars too expensive to fit on the axis at all. Right: the
+same prices after `np.log1p`, a roughly symmetric hill centred near \$30,000. The spike at the far left of
+both panels is 1,036 cars priced at exactly \$2,000.*
 
 ## Known limitations
 

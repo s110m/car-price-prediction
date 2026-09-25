@@ -3,3 +3,6 @@
 *.csv text eol=lf
 *.md text eol=lf
 *.py text eol=lf
+
+# chart exports are binary; never touch their bytes
+*.png binary
